@@ -1,0 +1,11 @@
+version: '3.8'
+services:
+  portfolio:
+    build: .
+    container_name: portfolio_c
+    image: portfolio:dev
+    ports:
+      - 3000:3000
+    volumes:
+      - .:/portfolio
+      - ./node_modules:/portfolio/node_modules
