@@ -3,3 +3,4 @@ dist
 .astro/
 .prettierrc.cjs
 .eslintrc.cjs
+tailwind.config.cjs

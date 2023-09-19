@@ -1,16 +1,47 @@
 ---
+import Button from '../components/Button.astro';
+import MainLayout from '../layouts/MainLayout.astro';
+import Link from '../components/Link.astro';
+import Switch from '../components/Switch.astro';
+import Marnetic from '../components/Marnetic.astro';
+import Navbar from '@components/Navbar.astro';
 ---
 
-<html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<meta name="viewport" content="width=device-width" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro</title>
-	</head>
-	<body class="p-8 bg-[#061000]">
-		<h1 class="text-forground text-2xl mb-6">Components:</h1>
-							<button class="bg-primary text-background px-4 h-10 rounded-md hover:bg-primary/90 focus:bg-primary focus:ring-1 focus:ring-offset-2 focus:ring-primary focus:ring-offset-background">Click here</button>
-	</body>
-</html>
+<MainLayout title="hello">
+  <Navbar />
+  <div class="p-4 mt-44 flex justify-center gap-44">
+    <Marnetic>
+      <Button type="submit">Get in touch</Button>
+    </Marnetic>
+    <Button variant="outline">Get in touch</Button>
+  </div>
+  <div class="p-4 mt-44 flex justify-center gap-2">
+    <Link href="/#" variant="uppercase">Contact</Link>
+    <Switch />
+  </div>
+</MainLayout>
+
+<script lang="ts" is:inline>
+  const theme = (() => {
+    if (typeof localStorage !== 'undefined' && localStorage.getItem('theme')) {
+      return localStorage.getItem('theme');
+    }
+    if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+      return 'dark';
+    }
+    return 'light';
+  })();
+
+  if (theme === 'light') {
+    document.documentElement.setAttribute('data-mode', 'light');
+  } else {
+    document.documentElement.setAttribute('data-mode', 'dark');
+  }
+  window.localStorage.setItem('theme', theme);
+
+  const handleScroling = (e) => {
+    console.log(e);
+  };
+
+  window.addEventListener('scroll', handleScroling);
+</script>

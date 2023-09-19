@@ -1,0 +1,40 @@
+/* The integration's default injected base.css file */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root[data-mode="light"] {
+    --background: 0deg 0% 94%;
+    --forground: 180deg 8% 7%;
+    --primary: 96deg 72% 67%;
+    --dark: 180deg 8% 7%;
+    --light: 0deg 0% 94%;
+  }
+
+  :root[data-mode="dark"] {
+    --background: 180deg 8% 7%;
+    --forground: 0deg 0% 94%;
+    --primary: 96deg 72% 67%;
+    --dark: 180deg 8% 7%;
+    --light: 0deg 0% 94%;
+  }
+
+  @media (prefers-color-scheme: light) {
+    :root {
+      --background: 0deg 0% 94%;
+      --forground: 180deg 8% 7%;
+      --primary: 96deg 72% 67%;
+      --dark: 180deg 8% 7%;
+    }
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --background: 180deg 8% 7%;
+      --forground: 0deg 0% 94%;
+      --primary: 96deg 72% 67%;
+      --dark: 180deg 8% 7%;
+    }
+  }
+}

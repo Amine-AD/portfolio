@@ -1,0 +1,160 @@
+---
+import type { HTMLAttributes } from "astro/types";
+import { cva, VariantProps } from 'class-variance-authority';
+import { cn } from "../utils/cn";
+import RightArrow from "./icons/RightArrow.astro";
+
+const { variant = 'solid', size = 'md', ...rest } = Astro.props;
+
+const button = cva(
+  "relative overflow-hidden font-semibold inline-flex items-center rounded-full",
+  {
+    variants: {
+      variant: {
+        solid:
+          "bg-gradient-to-b from-primary-300 to-primary-400",
+        outline: "text-forground border-2 border-forground",
+      },
+      size: {
+        sm: "text-md h-12 pl-6 pr-6",
+        md: "text-lg h-14 pl-8 pr-8",
+        lg: "text-xl h-16 pl-12 pr-12",
+      },
+    },
+    defaultVariants: {
+      variant: 'solid',
+      size: "md",
+    },
+  }
+);
+
+const icon = cva("relative rounded-full inline-flex items-center justify-center", {
+  variants: {
+    variant: {
+      solid: "bg-background text-forground",
+      outline: "bg-forground text-background mix-blend-difference",
+    },
+    size: {
+      sm: "w-8 h-8 ml-4",
+      md: "w-10 h-10 ml-6",
+      lg: "w-12 h-12 ml-8",
+    },
+  },
+  defaultVariants: {
+    variant: "solid",
+    size: "md",
+  },
+});
+
+interface Props
+  extends HTMLAttributes<"button">,
+    VariantProps<typeof button> {
+      variant?: "solid" | "outline",
+      size?: "sm" | "md" | "lg"
+    }
+
+const padding = size === "sm" ? "pr-2 pl-6" : size === "lg" ? "pr-2 pl-12" : "pr-2 pl-8";  
+
+const newVariant = !["solid", "outline"].includes(variant) ? 'solid' : variant
+
+const newSize = !["sm", "md", "lg"].includes(size) ? 'md' : size
+---
+<astro-button data-variant={variant}>
+  <button class={cn(button({ variant: newVariant, size: newSize }), padding)} {...rest}>
+    <div class="absolute left-1/2 -translate-x-1/2 top-full w-[150%] h-[200%] bg-forground rounded-[50%] pointer-events-none" />
+    <span class={cn("relative pointer-events-none", variant === "outline" && " mix-blend-difference")}>
+      <slot/>
+    </span>
+    <span class={cn(icon({ variant: newVariant, size: newSize }))}>
+      <slot name="icon">
+        <RightArrow slot="right-icon" classes="w-4" />
+      </slot>
+    </span>
+  </button>
+</astro-button>
+
+<script>
+  import { animate } from "motion";
+
+  class AstroButton extends HTMLElement {
+    constructor() {
+      super();
+      const button = this.querySelector('button');
+      
+      const handleHover = (e: MouseEvent) => {
+        const target = e.target as HTMLElement;
+        const box = target?.children[0] as HTMLElement;
+
+        if (box) {
+          animate(box,
+            {
+              top: ["100%", "-50%"],
+            },  
+            { 
+              easing: "ease-in" 
+            }
+          );
+        }
+      };
+
+      const handleHoverOut = (e: MouseEvent) => {
+        const target = e.target as HTMLElement;
+        const box = target?.children[0] as HTMLElement;
+
+        animate(target,
+          {
+            scale: "1",
+          },
+          {
+            easing: "ease-out"
+          }
+        );
+
+        if (box) {
+          animate(box,
+            {
+              top: "-200%",
+            },
+            {
+              easing: "ease-out"
+            }
+          );
+        };
+      };
+
+      const handleMouseDown = (e: MouseEvent) => {
+        const target = e.target as HTMLElement;
+
+        animate(target,
+          {
+            scale: "0.95",
+          },
+          {
+            easing: "ease-out"
+          }
+        )
+      }
+
+      const handleMouseUp = (e: MouseEvent) => {
+        const target = e.target as HTMLElement;
+        animate(target,
+          {
+            scale: "1",
+          },
+          {
+            easing: "ease-out"
+          }
+        )
+      }
+
+      button?.addEventListener('mouseover', handleHover); 
+
+      button?.addEventListener('mousedown', handleMouseDown);
+
+      button?.addEventListener('mouseup', handleMouseUp);
+      
+      button?.addEventListener('mouseleave', handleHoverOut);
+    }
+  }
+  customElements.define('astro-button', AstroButton);
+</script>

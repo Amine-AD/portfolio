@@ -3,3 +3,4 @@ dist
 .astro/
 *.md
 *.mdx
+*.yaml

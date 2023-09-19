@@ -1,41 +1,30 @@
 module.exports = {
-  env: {
-    browser: true,
-    es2021: true,
-  },
   extends: [
-    "eslint:recommended",
-    "plugin:react/recommended",
-    "plugin:jsx-a11y/recommended",
-    "plugin:@typescript-eslint/recommended",
-    "eslint-config-prettier",
+    'plugin:astro/recommended',
+    'plugin:jsx-a11y/recommended',
+    'plugin:@typescript-eslint/recommended',
   ],
+  rules: {},
   overrides: [
     {
+      files: ['*.astro'],
+      plugins: ['astro'],
       env: {
         node: true,
+        'astro/astro': true,
+        es2020: true,
       },
-      files: [".eslintrc.{js,cjs}"],
+      parser: 'astro-eslint-parser',
       parserOptions: {
-        sourceType: "script",
+        parser: '@typescript-eslint/parser',
+        extraFileExtensions: ['.astro'],
+        project: 'tsconfig.json',
+        tsconfigRootDir: __dirname,
+        sourceType: 'module',
+      },
+      rules: {
+        // "astro/no-set-html-directive": "error",
       },
     },
   ],
-  parser: "@typescript-eslint/parser",
-  parserOptions: {
-    ecmaFeatures: {
-      jsx: true,
-    },
-    ecmaVersion: "latest",
-    sourceType: "module",
-  },
-  plugins: ["react", "@typescript-eslint", "prettier"],
-  rules: {
-    "react/react-in-jsx-scope": "off",
-  },
-  settings: {
-    // "import/resolver": {
-    //   typescript: {},
-    // },
-  },
-};
+}

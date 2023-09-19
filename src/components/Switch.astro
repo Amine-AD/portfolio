@@ -1,0 +1,57 @@
+---
+import Dark from "./icons/Dark.astro";
+import Light from "./icons/Light.astro";
+---
+
+<astro-switch data-message={'themeMode'}>
+  <button
+    type="button"
+    role="switch"
+    class="group relative inline-flex items-center shrink-0 bg-forground w-20 h-11 rounded-full"
+  >
+    <span class="sr-only">Switch theme</span>
+    <span
+      aria-hidden="true"
+      class="absolute top-1 left-10 group-aria-checked:left-1 z-10 w-9 h-9 pointer-events-none rounded-full bg-gradient-to-b from-primary-300 to-primary-400 transition-all duration-300"
+    ></span>
+    <div class="flex w-full h-full items-center relative">
+      <span class="w-9 h-9 ml-1 inline-flex items-center justify-center rounded-full rotate-0 group-aria-checked:-rotate-45 transition-all duration-300 delay-100">
+        <Light class="w-6 text-background" />
+      </span>
+      <span class="w-9 h-9 mr-1 inline-flex items-center justify-center rounded-full -rotate-45 group-aria-checked:rotate-0 transition-all duration-300 delay-100">
+        <Dark class="w-6 text-background" />
+      </span>
+    </div>
+  </button>
+</astro-switch>
+
+<script>
+  class AstroSwitch extends HTMLElement {
+      constructor() {
+          super();
+          const element = this.querySelector('button');  
+          const message = this.dataset.message;
+          console.log(message)     
+          if (localStorage.getItem('theme') === "light") {
+              element?.setAttribute("aria-checked", "true")
+            } else {
+              element?.setAttribute("aria-checked", "false")
+          }
+          const handleToggleClick = () => {
+            const theme = localStorage.getItem('theme');  
+            if (theme === "light") {
+              element?.setAttribute("aria-checked", "false")
+              document.documentElement.setAttribute("data-mode", "dark");
+              localStorage.setItem("theme", "dark");
+            } else {
+              element?.setAttribute("aria-checked", "true")
+              document.documentElement.setAttribute("data-mode", "light");
+              localStorage.setItem("theme", "light");
+            }
+          }
+          
+          element?.addEventListener('click', handleToggleClick); 
+      }   
+  }
+  customElements.define('astro-switch', AstroSwitch);
+</script>

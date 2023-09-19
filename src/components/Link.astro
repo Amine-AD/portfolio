@@ -1,0 +1,91 @@
+---
+import { VariantProps, cva } from 'class-variance-authority';
+import { cn } from '../utils/cn';
+import type { HTMLAttributes } from 'astro/types';
+
+const { variant = 'capitalize', size = 'md', ...rest } = Astro.props;
+
+const link = cva('text-forground', {
+  variants: {
+    variant: {
+      capitalize: 'capitalize',
+      uppercase: 'uppercase',
+    },
+    size: {
+      sm: 'text-md',
+      md: 'text-3xl',
+      lg: 'text-xl',
+    },
+  },
+  defaultVariants: {
+    variant: 'capitalize',
+    size: 'md',
+  },
+});
+
+interface Props extends HTMLAttributes<'a'>, VariantProps<typeof link> {
+  variant?: 'capitalize' | 'uppercase';
+  size?: 'sm' | 'md' | 'lg';
+}
+---
+
+<a class={cn(link({ variant, size }))} {...rest}>
+  <slot />
+</a>
+
+<script>
+  import { animate, stagger } from 'motion';
+  import SplitType from 'split-type';
+
+  const links = document.querySelectorAll('a');
+
+  const offset = 0.08;
+
+  const handleHover = (chars: HTMLElement[] | null) => {
+    if (chars?.length) {
+      const numSegments = chars.length;
+      animate(
+        chars,
+        { opacity: [1, 0.6] },
+        {
+          offset: [0, 1],
+          repeat: Infinity,
+          direction: 'alternate',
+          duration: numSegments * offset,
+          delay: stagger(offset),
+          easing: ['ease-out', 'ease-in'],
+        }
+      );
+    }
+  };
+
+  const handleHoverOut = (chars: HTMLElement[] | null) => {
+    if (chars?.length) {
+      const numSegments = chars.length;
+      animate(
+        chars,
+        { opacity: [null, 1] },
+        {
+          offset: [0, 1],
+          duration: numSegments * offset,
+          delay: stagger(offset),
+        }
+      );
+    }
+  };
+
+  links?.forEach((link) => {
+    const splitedText = new SplitType(link, {
+      tagName: 'span',
+      types: 'words, chars',
+      wordClass: '',
+      charClass: 'pointer-events-none',
+    });
+
+    const { chars } = splitedText;
+
+    link?.addEventListener('mouseover', () => handleHover(chars));
+
+    link?.addEventListener('mouseleave', () => handleHoverOut(chars));
+  });
+</script>
